@@ -8,6 +8,9 @@ import { slugify } from "data-interchange";
 import { useLocalStorage } from "data-interchange";
 
 import content from "../contacts.json";
+
+import type { Contact } from "data-interchange";
+
 const contactsHardcoded: Contact[] = content;
 
 // Atoms
@@ -20,7 +23,7 @@ const Body = (props: { contact: Contact }) => {
 	const [contacts, setContacts] = useLocalStorage<Contact[]>(`contacts`);
 	const localContacts: Contact[] = contacts;
 
-	const localContact: Contact = localContacts?.find(
+	const localContact = localContacts?.find(
 		(c) => props?.contact?.email === c?.email
 	);
 	const contact: Contact = localContact ? localContact : props?.contact;
@@ -145,7 +148,7 @@ export async function getStaticProps(props: { params: { slug: string[] } }) {
 
 	const currentPath = `${slug.join("/")}`;
 
-	const contact: Contact[] = contactsHardcoded.find(
+	const contact = contactsHardcoded.find(
 		(contact) => slugify(contact?.name) === currentPath
 	) || {
 		notfound: true,

@@ -5,8 +5,10 @@ import { useLocalStorage } from "data-interchange";
 // Templates
 import { TemplateBase } from "data-interchange";
 
+import type { Contact } from "data-interchange";
+
 const HomepageContents = () => {
-	const [contacts, setContacts] = useLocalStorage<any>(`contacts`, []);
+	const [contacts] = useLocalStorage<any>(`contacts`);
 	const localContacts: Contact[] = contacts;
 	const hasLocal = localContacts?.length > 0;
 

@@ -8,9 +8,6 @@ module.exports = {
 		config.resolve.alias["data-interchange"] = buildPath("src");
 		config.resolve.alias["atoms"] = buildPath("src/atoms");
 		config.resolve.alias["particles"] = buildPath("src/particles");
-		config.resolve.alias["data-interchange-types"] = buildPath(
-			"src/particles/index.d.ts"
-		);
 
 		return config;
 	},

@@ -14,6 +14,8 @@ import { ErrorMessage } from "data-interchange";
 import { Footer } from "data-interchange";
 import { Header } from "data-interchange";
 
+import type { Contact } from "data-interchange";
+
 const defaultContacts: Contact[] = contactsJSON;
 
 const Skeletons: React.FC = () => {
@@ -26,7 +28,7 @@ const Skeletons: React.FC = () => {
 	);
 };
 
-const TemplateBase = (props) => {
+const TemplateBase = (props: { children: JSX.Element | JSX.Element[] }) => {
 	const { children } = props;
 
 	const [contacts, setContacts] = useLocalStorage<any>(`contacts`, []);
