@@ -5,3 +5,5 @@ declare type Contact = {
 	phone: string;
 	age: number;
 };
+
+export type { Contact };

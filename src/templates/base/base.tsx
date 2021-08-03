@@ -1,42 +1,60 @@
-import Link from "next/link";
 import React from "react";
-import content from "../../../contacts.json";
 
-import { slugify } from "../..";
+// Particles
+import contactsJSON from "../../contacts.json";
+import { useLocalStorage } from "data-interchange";
 
-const contacts: Contact[] = content;
+// Atoms
+import { Skeleton } from "data-interchange";
 
-const Base = (props) => {
-	const { children } = props;
+// Molecules
+import { ErrorMessage } from "data-interchange";
 
+// Organisms
+import { Footer } from "data-interchange";
+import { Header } from "data-interchange";
+
+import type { Contact } from "data-interchange";
+
+const defaultContacts: Contact[] = contactsJSON;
+
+const Skeletons: React.FC = () => {
 	return (
 		<>
-			<header>
-				<nav>
-					<ul>
-						<li>
-							<Link href="/">
-								<a>Homepage</a>
-							</Link>
-						</li>
-						{contacts.map((contact) => {
-							const name = contact?.name;
-							const slug = slugify(name);
-
-							return (
-								<li key={slug}>
-									<Link href="[...slug]" as={slug}>
-										<a>{name}</a>
-									</Link>
-								</li>
-							);
-						})}
-					</ul>
-				</nav>
-			</header>
-			<main>{children}</main>
+			{[...Array(9)].map((_, i) => (
+				<Skeleton height="100" key={`contact-skeleton-${i}`} />
+			))}
 		</>
 	);
 };
 
-export { Base };
+const TemplateBase = (props: { children: JSX.Element | JSX.Element[] }) => {
+	const { children } = props;
+
+	const [contacts, setContacts] = useLocalStorage<any>(`contacts`, []);
+	const localContacts: Contact[] = contacts;
+
+	const hasLocal = localContacts?.length > 0;
+	const hasLocalDefault = defaultContacts?.length > 0;
+
+	const hasNeitherContacts = !hasLocal && !hasLocalDefault;
+	if (hasNeitherContacts)
+		return <ErrorMessage error="No contacts were found in local JSON file" />;
+
+	if (!hasLocal) {
+		setContacts(defaultContacts);
+		return <Skeletons />;
+	}
+
+	return (
+		<>
+			<Header />
+			<main>
+				<div className="page__wrapper">{children}</div>
+			</main>
+			<Footer />
+		</>
+	);
+};
+
+export { TemplateBase };
