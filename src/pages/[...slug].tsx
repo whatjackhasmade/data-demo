@@ -83,6 +83,7 @@ const Body = (props: { contact: Contact }) => {
 								/>
 								<label htmlFor="email">Email Address</label>
 								<input
+									disabled
 									id="email"
 									name="email"
 									type="email"
