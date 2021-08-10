@@ -20,32 +20,52 @@ import { Skeleton } from "data-interchange";
 import { TemplateBase } from "data-interchange";
 
 const Body = (props: { contact: Contact }) => {
+	// Get the contacts available in local storage
 	const [contacts, setContacts] = useLocalStorage<Contact[]>(`contacts`);
+
+	// Name that value so we know these are the local contacts
 	const localContacts: Contact[] = contacts;
 
+	// Determine if the contact we are viewing is available as a local contact
 	const localContact = localContacts?.find(
 		(c) => props?.contact?.email === c?.email
 	);
+
+	// If we have a local contact, use that in favour of the one generated from JSON file
 	const contact: Contact = localContact ? localContact : props?.contact;
+
+	// Get the contact named properties from contact object
 	const { name, street, email, phone, age } = contact;
 
+	// Initialize Formik
 	const formik = useFormik({
+		// The initial values in the form will be based on the contact data at the start of the render
 		initialValues: {
 			...contact,
 		},
 
+		// On submit...
 		onSubmit: (values) => {
+			// Go over each of the local contacts
 			const newValues = localContacts.map((c) => {
-				const isUpdated = c?.name === name;
+				// If the contact in the local records doesn't match the UUID (email)
+				const isUpdated = c?.email === email;
+				// Then return the original contact
 				if (!isUpdated) return c;
 
+				// Otherwise return the form values
 				return { ...values };
 			});
 
+			// Set the updated contact values to local storage
 			setContacts(newValues);
+
+			// Save the new values (array) as a JSON file
 			saveJSON("updated-contacts.json", JSON.stringify(newValues));
 		},
 	});
+
+	// Destructure formik helpers
 	const { handleChange, handleSubmit, values } = formik;
 
 	return (
