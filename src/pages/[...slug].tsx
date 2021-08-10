@@ -151,13 +151,21 @@ const Body = (props: { contact: Contact }) => {
 export default function Page(props: { contact: Contact }) {
 	const { contact } = props;
 
+	// If no contact, we are loading
 	if (!contact) return <Skeleton />;
+
+	// Return the full body with contact as props reference
 	return <Body {...props} />;
 }
 
+// SSG the contact pages
 export async function getStaticPaths() {
+	// For each JSON object contact...
 	const paths = contactsHardcoded.map((contact) => {
+		// Create a slug from the users name
 		const slug = slugify(contact?.name);
+
+		// Set the slug as the parameter we expect in [...slug]
 		return { params: { slug: [slug] } };
 	});
 	return { paths, fallback: true };
@@ -167,14 +175,18 @@ export async function getStaticProps(props: { params: { slug: string[] } }) {
 	const { params } = props;
 	const slug = params.slug;
 
+	// Get the current path
 	const currentPath = `${slug.join("/")}`;
 
+	// If the URL hit matches on of our contacts names as a slug, then use that as prop context
+	// Otherwise return 404 page
 	const contact = contactsHardcoded.find(
 		(contact) => slugify(contact?.name) === currentPath
 	) || {
 		notfound: true,
 	};
 
+	// Add the contact object to the static props
 	const pageProps = { props: { contact } };
 	return pageProps;
 }
